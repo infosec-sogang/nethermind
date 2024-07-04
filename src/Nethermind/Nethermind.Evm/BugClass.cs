@@ -98,6 +98,81 @@ namespace Nethermind.Evm {
             }
         }
 
+        public static BugClass toBugClass (string tag){
+            switch (tag) {
+                case "AF":
+                    return BugClass.AssertionFailure;
+                case "AW":
+                    return BugClass.ArbitraryWrite;
+                case "BD":
+                    return BugClass.BlockstateDependency;
+                case "BD_sfuzz":
+                    return BugClass.BlockstateDependencySFuzz;
+                case "BD_ilf":
+                    return BugClass.BlockstateDependencyILF;
+                case "BD_myth":
+                    return BugClass.BlockstateDependencyMythril;
+                case "BD_mant":
+                    return BugClass.BlockstateDependencyManticore;
+                case "CH":
+                    return BugClass.ControlHijack;
+                case "EL":
+                    return BugClass.EtherLeak;
+                case "EL_ilf":
+                    return BugClass.EtherLeakILF;
+                case "EL_myth":
+                    return BugClass.EtherLeakMythril;
+                case "EL_mant":
+                    return BugClass.EtherLeakManticore;
+                case "IB":
+                    return BugClass.IntegerBug;
+                case "IB_sfuzz":
+                    return BugClass.IntegerBugSFuzz;
+                case "IB_myth":
+                    return BugClass.IntegerBugMythril;
+                case "IB_mant":
+                    return BugClass.IntegerBugManticore;
+                case "ME":
+                    return BugClass.MishandledException;
+                case "ME_sfuzz":
+                    return BugClass.MishandledExceptionSFuzz;
+                case "ME_ilf":
+                    return BugClass.MishandledExceptionILF;
+                case "ME_myth":
+                    return BugClass.MishandledExceptionMythril;
+                case "ME_mant":
+                    return BugClass.MishandledExceptionManticore;
+                case "MS":
+                    return BugClass.MultipleSend;
+                case "RE":
+                    return BugClass.Reentrancy;
+                case "RE_sfuzz":
+                    return BugClass.ReentrancySFuzz;
+                case "RE_ilf":
+                    return BugClass.ReentrancyILF;
+                case "RE_myth":
+                    return BugClass.ReentrancyMythril;
+                case "RE_mant":
+                    return BugClass.ReentrancyManticore;
+                case "SC":
+                    return BugClass.SuicidalContract;
+                case "SC_ilf":
+                    return BugClass.SuicidalContractILF;
+                case "SC_myth":
+                    return BugClass.SuicidalContractMythril;
+                case "SC_mant":
+                    return BugClass.SuicidalContractManticore;
+                case "TO":
+                    return BugClass.TransactionOriginUse;
+                case "FE":
+                    return BugClass.FreezingEther;
+                case "RV":
+                    return BugClass.RequirementViolation;
+                default:
+                    return BugClass.AssertionFailure; // Must be unreachable.
+            }
+        }
+
         public static string toTag(BugClass bug) {
             switch (bug) {
                 case BugClass.AssertionFailure:
