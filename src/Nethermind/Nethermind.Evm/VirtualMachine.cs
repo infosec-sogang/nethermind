@@ -3405,11 +3405,6 @@ namespace Nethermind.Evm
                                 }
                                 BugOracle.DepthsWithSend.Add(env.CallDepth);
 
-                                // Manticore reports EL if the destination is controllable or equal to the sender.
-                                if (instruction == Instruction.CALL && (IsUser(codeSource) || codeSource == env.Sender))
-                                {
-                                    BugSet.Add((BugClass.EtherLeakManticore, programCounter - 1));
-                                }
                             }
 
                             // Raise IB alarms if overflowed value decides the amount of ether to send.
@@ -3733,25 +3728,22 @@ namespace Nethermind.Evm
 
                         _state.SubtractFromBalance(env.ExecutingAccount, ownerBalance, spec);
 
+                        if (ownerBalance > 0) BugOracle.LastEtherSendPC = programCounter - 1;
                         if (isTestingTarget)
                         {
                             BugOracle.SendEtherIndependently = true;
-                            // If there was any transaction from deployer, ownership could have been trasnferred.
-                            if (!HadDeployerTx && IsUser(inheritor)) // This also implies that the current sender is not deployer.
+                            // Check if the transaction sender is untrusted user.
+                            if (IsUser(env.Sender))
                             {
-                                BugSet.Add((BugClass.SuicidalContract, programCounter - 1));
-                                // Mythril has the same logic with Smartian.
-                                BugSet.Add((BugClass.SuicidalContractMythril, programCounter - 1));
+                                // If there was any previous TX from deployer, ownership could have been trasnferred legitimately.
+                                // Therefore, we report an SC bug with less confidence in such cases.
+                                if (HadDeployerTx) {
+                                    BugSet.Add((BugClass.SuicidalContract, programCounter - 1));
+                                } else {
+                                    BugSet.Add((BugClass.SuicidalContractStrict, programCounter - 1));
+                                }
                             }
-                            // ILF does not check whether the transaction is from a normal user.
-                            if (IsUser(inheritor))
-                            {
-                                BugSet.Add((BugClass.SuicidalContractILF, programCounter - 1));
-                            }
-                            // Manticore simply checks whether the instruction is reachable.
-                            BugSet.Add((BugClass.SuicidalContractManticore, programCounter - 1));
                         }
-
                         UpdateCurrentState();
                         EndInstructionTrace();
                         return CallResult.Empty;

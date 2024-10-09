@@ -11,9 +11,7 @@ namespace Nethermind.Evm {
         BlockstateDependencyManticore,
         ControlHijack,
         EtherLeak,
-        EtherLeakILF,
-        EtherLeakMythril,
-        EtherLeakManticore,
+        EtherLeakStrict, // Detected by a bug oracle with a strict check
         IntegerBug,
         IntegerBugSFuzz,
         IntegerBugMythril,
@@ -30,9 +28,7 @@ namespace Nethermind.Evm {
         ReentrancyMythril,
         ReentrancyManticore,
         SuicidalContract,
-        SuicidalContractILF,
-        SuicidalContractMythril,
-        SuicidalContractManticore,
+        SuicidalContractStrict, // Detected by a bug oracle with a strict check
         TransactionOriginUse,
         FreezingEther,
         RequirementViolation
@@ -40,7 +36,17 @@ namespace Nethermind.Evm {
 
     public class BugClassHelper {
         public static string toString(BugClass bug) {
-            return bug.ToString();
+            switch (bug)
+            {
+                // Bugs detected with strict oracle will be converted without
+                // a suffix. This will provide better readability to the user.
+                case BugClass.EtherLeakStrict:
+                    return "EtherLeak";
+                case BugClass.SuicidalContractStrict:
+                    return "SuicidalContract";
+                default:
+                    return bug.ToString();
+            }
         }
 
         public static bool isOptional(BugClass bug) {
@@ -60,6 +66,7 @@ namespace Nethermind.Evm {
                 case BugClass.BlockstateDependency:
                 case BugClass.ControlHijack:
                 case BugClass.EtherLeak:
+                case BugClass.EtherLeakStrict:
                 case BugClass.FreezingEther:
                 case BugClass.IntegerBug:
                 case BugClass.MishandledException:
@@ -67,6 +74,7 @@ namespace Nethermind.Evm {
                 case BugClass.Reentrancy:
                 case BugClass.RequirementViolation:
                 case BugClass.SuicidalContract:
+                case BugClass.SuicidalContractStrict:
                 case BugClass.TransactionOriginUse:
                     return false;
 
@@ -74,9 +82,6 @@ namespace Nethermind.Evm {
                 case BugClass.BlockstateDependencyILF:
                 case BugClass.BlockstateDependencyMythril:
                 case BugClass.BlockstateDependencyManticore:
-                case BugClass.EtherLeakILF:
-                case BugClass.EtherLeakMythril:
-                case BugClass.EtherLeakManticore:
                 case BugClass.IntegerBugSFuzz:
                 case BugClass.IntegerBugMythril:
                 case BugClass.IntegerBugManticore:
@@ -88,9 +93,6 @@ namespace Nethermind.Evm {
                 case BugClass.ReentrancyILF:
                 case BugClass.ReentrancyMythril:
                 case BugClass.ReentrancyManticore:
-                case BugClass.SuicidalContractILF:
-                case BugClass.SuicidalContractMythril:
-                case BugClass.SuicidalContractManticore:
                     return true;
 
                 default:
@@ -118,12 +120,8 @@ namespace Nethermind.Evm {
                     return BugClass.ControlHijack;
                 case "EL":
                     return BugClass.EtherLeak;
-                case "EL_ilf":
-                    return BugClass.EtherLeakILF;
-                case "EL_myth":
-                    return BugClass.EtherLeakMythril;
-                case "EL_mant":
-                    return BugClass.EtherLeakManticore;
+                case "EL_strict":
+                    return BugClass.EtherLeakStrict;
                 case "IB":
                     return BugClass.IntegerBug;
                 case "IB_sfuzz":
@@ -156,12 +154,8 @@ namespace Nethermind.Evm {
                     return BugClass.ReentrancyManticore;
                 case "SC":
                     return BugClass.SuicidalContract;
-                case "SC_ilf":
-                    return BugClass.SuicidalContractILF;
-                case "SC_myth":
-                    return BugClass.SuicidalContractMythril;
-                case "SC_mant":
-                    return BugClass.SuicidalContractManticore;
+                case "SC_strict":
+                    return BugClass.SuicidalContractStrict;
                 case "TO":
                     return BugClass.TransactionOriginUse;
                 case "FE":
@@ -193,12 +187,6 @@ namespace Nethermind.Evm {
                     return "CH";
                 case BugClass.EtherLeak:
                     return "EL";
-                case BugClass.EtherLeakILF:
-                    return "EL_ilf";
-                case BugClass.EtherLeakMythril:
-                    return "EL_myth";
-                case BugClass.EtherLeakManticore:
-                    return "EL_mant";
                 case BugClass.IntegerBug:
                     return "IB";
                 case BugClass.IntegerBugSFuzz:
@@ -231,12 +219,6 @@ namespace Nethermind.Evm {
                     return "RE_mant";
                 case BugClass.SuicidalContract:
                     return "SC";
-                case BugClass.SuicidalContractILF:
-                    return "SC_ilf";
-                case BugClass.SuicidalContractMythril:
-                    return "SC_myth";
-                case BugClass.SuicidalContractManticore:
-                    return "SC_mant";
                 case BugClass.TransactionOriginUse:
                     return "TO";
                 case BugClass.FreezingEther:
