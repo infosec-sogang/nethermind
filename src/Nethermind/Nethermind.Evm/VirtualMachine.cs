@@ -86,7 +86,8 @@ namespace Nethermind.Evm
         public bool IsDeployingTarget { get; set; } = false;
         public bool HadDeployerTx { get; set; } = false;
         public bool IsRedirected { get; set; } = false;
-
+        public bool IsDeployingTx { get; set; } = false;
+        public int DeployCodeSize = 0;
         public Address TargetContractAddr { get; set; } = Address.Zero;
         public Address TargetOwnerAddr { get; set; } = Address.Zero;
         private Address[] NormalUsers = new Address[32];
@@ -2065,8 +2066,13 @@ namespace Nethermind.Evm
                             EndInstructionTraceError(OutOfGasErrorText);
                             return CallResult.OutOfGasException;
                         }
-
-                        BigInteger codeLength = code.Length;
+                        BigInteger codeLength;
+                        if (IsDeployingTx){
+                            codeLength = DeployCodeSize;
+                        }
+                        else{
+                            codeLength = code.Length;
+                        }
                         PushUInt(ref codeLength, bytesOnStack);
 
                         PushNonTainted();
