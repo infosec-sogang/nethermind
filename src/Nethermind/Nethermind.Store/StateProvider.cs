@@ -544,7 +544,7 @@ namespace Nethermind.Store
             }
         }
 
-        private Account GetState(Address address)
+        public Account GetState(Address address)
         {
             Metrics.StateTreeReads++;
             Account account = _tree.Get(address);
