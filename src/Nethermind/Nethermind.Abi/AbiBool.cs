@@ -20,7 +20,7 @@ namespace Nethermind.Abi
 {
     public class AbiBool : AbiUInt
     {
-        private AbiBool() : base(8)
+        private AbiBool() : base(256)
         {
         }
 
@@ -32,11 +32,13 @@ namespace Nethermind.Abi
         {
             if (arg is bool input)
             {
-                return new[] {input ? (byte) 1 : (byte) 0};
+                byte[] encoded = new byte[32];
+                encoded[31] = input ? (byte)1 : (byte)0;
+                return encoded;
             }
 
             throw new AbiException(AbiEncodingExceptionMessage);
-        }
+        }   
 
         public override (object, int) Decode(byte[] data, int position, bool packed)
         {
