@@ -2147,6 +2147,7 @@ namespace Nethermind.Evm
                         taintStack.Pop();
                         taintStack.Pop();
                         taintStack.Pop();
+                        taintStack.Pop();
                         CheckStackConsistency("EXTCODECOPY");
 
                         if (!UpdateGas((spec.IsEip150Enabled ? GasCostOf.ExtCodeEip150 : GasCostOf.ExtCode) + GasCostOf.Memory * EvmPooledMemory.Div32Ceiling(length),
