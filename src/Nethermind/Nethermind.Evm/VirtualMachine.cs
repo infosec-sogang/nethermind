@@ -3732,15 +3732,8 @@ namespace Nethermind.Evm
                         if (isTestingTarget)
                         {
                             BugOracle.SendEtherIndependently = true;
-                            // Check if the transaction sender is untrusted user.
-                            if (IsUser(env.Sender))
-                            {
-                                // If there was any previous TX from deployer, ownership could have been trasnferred legitimately.
-                                // Therefore, we report an SC bug with less confidence in such cases.
-                                if (HadDeployerTx) {
-                                    BugSet.Add((BugClass.SuicidalContract, programCounter - 1));
-                                }
-                            }
+                            //RLF Oracle
+                            BugSet.Add((BugClass.SuicidalContract, programCounter - 1));
                         }
                         UpdateCurrentState();
                         EndInstructionTrace();
