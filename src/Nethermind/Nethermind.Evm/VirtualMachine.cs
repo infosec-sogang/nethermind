@@ -3739,8 +3739,6 @@ namespace Nethermind.Evm
                                 // Therefore, we report an SC bug with less confidence in such cases.
                                 if (HadDeployerTx) {
                                     BugSet.Add((BugClass.SuicidalContract, programCounter - 1));
-                                } else {
-                                    BugSet.Add((BugClass.SuicidalContractStrict, programCounter - 1));
                                 }
                             }
                         }

@@ -11,7 +11,6 @@ namespace Nethermind.Evm {
         BlockstateDependencyManticore,
         ControlHijack,
         EtherLeak,
-        EtherLeakStrict, // Detected by a bug oracle with a strict check
         IntegerBug,
         IntegerBugSFuzz,
         IntegerBugMythril,
@@ -28,7 +27,6 @@ namespace Nethermind.Evm {
         ReentrancyMythril,
         ReentrancyManticore,
         SuicidalContract,
-        SuicidalContractStrict, // Detected by a bug oracle with a strict check
         TransactionOriginUse,
         FreezingEther,
         RequirementViolation
@@ -38,12 +36,6 @@ namespace Nethermind.Evm {
         public static string toString(BugClass bug) {
             switch (bug)
             {
-                // Bugs detected with strict oracle will be converted without
-                // a suffix. This will provide better readability to the user.
-                case BugClass.EtherLeakStrict:
-                    return "EtherLeak";
-                case BugClass.SuicidalContractStrict:
-                    return "SuicidalContract";
                 default:
                     return bug.ToString();
             }
@@ -66,7 +58,6 @@ namespace Nethermind.Evm {
                 case BugClass.BlockstateDependency:
                 case BugClass.ControlHijack:
                 case BugClass.EtherLeak:
-                case BugClass.EtherLeakStrict:
                 case BugClass.FreezingEther:
                 case BugClass.IntegerBug:
                 case BugClass.MishandledException:
@@ -74,7 +65,6 @@ namespace Nethermind.Evm {
                 case BugClass.Reentrancy:
                 case BugClass.RequirementViolation:
                 case BugClass.SuicidalContract:
-                case BugClass.SuicidalContractStrict:
                 case BugClass.TransactionOriginUse:
                     return false;
 
@@ -120,8 +110,6 @@ namespace Nethermind.Evm {
                     return BugClass.ControlHijack;
                 case "EL":
                     return BugClass.EtherLeak;
-                case "EL_strict":
-                    return BugClass.EtherLeakStrict;
                 case "IB":
                     return BugClass.IntegerBug;
                 case "IB_sfuzz":
@@ -154,8 +142,6 @@ namespace Nethermind.Evm {
                     return BugClass.ReentrancyManticore;
                 case "SC":
                     return BugClass.SuicidalContract;
-                case "SC_strict":
-                    return BugClass.SuicidalContractStrict;
                 case "TO":
                     return BugClass.TransactionOriginUse;
                 case "FE":
